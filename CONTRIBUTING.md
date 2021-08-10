@@ -1,4 +1,4 @@
-Contribute to this documentation
+# Contribute to this documentation
 
 Thank you for your interest in our documentation!
 
@@ -36,7 +36,6 @@ Use GitHub to contribute to this documentation without having to clone the repo 
 
 You now have successfully submitted a pull request. Pull requests are typically reviewed within 10 business days.
 
-
 ## Contribute using Git
 
 Use Git to contribute substantive changes, such as:
@@ -68,17 +67,17 @@ Pull requests are typically reviewed within 10 business days.
 
 ### To set up your fork of the repository
 
-1.	Set up a GitHub account so you can contribute to this project. If you haven't done this, go to [GitHub](https://github.com/join) and do it now.
-2.	Install Git on your computer. Follow the steps in the [Setting up Git Tutorial] [Set Up Git].
-3.	Create your own fork of this repository. To do this, at the top of the page,  choose the **Fork** button.
-4.	Copy your fork to your computer. To do this, open Git Bash. At the command prompt enter:
+1. Set up a GitHub account so you can contribute to this project. If you haven't done this, go to [GitHub](https://github.com/join) and do it now.
+2. Install Git on your computer. Follow the steps in the [Setting up Git Tutorial] [Set Up Git].
+3. Create your own fork of this repository. To do this, at the top of the page,  choose the **Fork** button.
+4. Copy your fork to your computer. To do this, open Git Bash. At the command prompt enter:
 
-        git clone https://github.com/<your user name>/<repo name>.git
+        git clone https://github.com/<your user name>/nodejs-webhooks-rest-sample.git
 
     Next, create a reference to the root repository by entering these commands:
 
-        cd <repo name>
-        git remote add upstream https://github.com/microsoftgraph/<repo name>.git
+        cd nodejs-webhooks-rest-sample
+        git remote add upstream https://github.com/microsoftgraph/nodejs-webhooks-rest-sample.git
         git fetch upstream
 
 Congratulations! You've now set up your repository. You won't need to repeat these steps again.
@@ -102,18 +101,18 @@ To make the contribution process as seamless as possible, follow these steps.
 
 #### To create a new branch
 
-1.	Open Git Bash.
-2.	At the Git Bash command prompt, type `git pull upstream main:<new branch name>`. This creates a new branch locally that is copied from the latest MicrosoftGraph main branch.
-3.	At the Git Bash command prompt, type `git push origin <new branch name>`. This alerts GitHub to the new branch. You should now see the new branch in your fork of the repository on GitHub.
-4.	At the Git Bash command prompt, type `git checkout <new branch name>` to switch to your new branch.
+1. Open Git Bash.
+2. At the Git Bash command prompt, type `git pull upstream main:<new branch name>`. This creates a new branch locally that is copied from the latest MicrosoftGraph main branch.
+3. At the Git Bash command prompt, type `git push origin <new branch name>`. This alerts GitHub to the new branch. You should now see the new branch in your fork of the repository on GitHub.
+4. At the Git Bash command prompt, type `git checkout <new branch name>` to switch to your new branch.
 
 #### Add new content or edit existing content
 
-You navigate to the repository on your computer by using File Explorer. The repository files are in `C:\Users\<yourusername>\<repo name>`.
+You navigate to the repository on your computer by using File Explorer. The repository files are in `C:\Users\<yourusername>\nodejs-webhooks-rest-sample`.
 
 To edit files, open them in an editor of your choice and modify them. To create a new file, use the editor of your choice and save the new file in the appropriate location in your local copy of the repository. While working, save your work frequently.
 
-The files in `C:\Users\<yourusername>\<repo name>` are a working copy of the new branch that you created in your local repository. Changing anything in this folder doesn't affect the local repository until you commit a change. To commit a change to the local repository, type the following commands in GitBash:
+The files in `C:\Users\<yourusername>\nodejs-webhooks-rest-sample` are a working copy of the new branch that you created in your local repository. Changing anything in this folder doesn't affect the local repository until you commit a change. To commit a change to the local repository, type the following commands in GitBash:
 
     git add .
     git commit -v -a -m "<Describe the changes made in this commit>"
@@ -130,15 +129,15 @@ When you're finished with your work and are ready to have it merged into the mai
 
 #### To submit a pull request to the main repository
 
-1.	In the Git Bash command prompt, type `git push origin <new branch name>`. In your local repository, `origin` refers to your GitHub repository that you cloned the local repository from. This command pushes the current state of your new branch, including all commits made in the previous steps, to your GitHub fork.
-2.	On the GitHub site, navigate in your fork to the new branch.
-3.	Choose the **Pull Request** button at the top of the page.
-4.	Verify the Base branch is `microsoftgraph/<repo name>@main` and the Head branch is `<your username>/<repo name>@<branch name>`.
-5.	Choose the **Update Commit Range** button.
-6.	Add a title to your pull request, and describe all the changes you're making.
-7.	Submit the pull request.
+1. In the Git Bash command prompt, type `git push origin <new branch name>`. In your local repository, `origin` refers to your GitHub repository that you cloned the local repository from. This command pushes the current state of your new branch, including all commits made in the previous steps, to your GitHub fork.
+2. On the GitHub site, navigate in your fork to the new branch.
+3. Choose the **Pull Request** button at the top of the page.
+4. Verify the Base branch is `microsoftgraph/nodejs-webhooks-rest-sample@main` and the Head branch is `<your username>/nodejs-webhooks-rest-sample@<branch name>`.
+5. Choose the **Update Commit Range** button.
+6. Add a title to your pull request, and describe all the changes you're making.
+7. Submit the pull request.
 
-One of the site administrators will process your pull request. Your pull request will surface on the microsoftgraph/<repo name> site under Issues. When the pull request is accepted, the issue will be resolved.
+One of the site administrators will process your pull request. Your pull request will surface on the microsoftgraph/nodejs-webhooks-rest-sample site under Issues. When the pull request is accepted, the issue will be resolved.
 
 #### Create a new branch after merge
 
@@ -162,9 +161,9 @@ Once your changes are successfully merged into the main repository, delete the b
 
 #### To delete a branch
 
-1.	In the Git Bash command prompt, type `git checkout main`. This ensures that you aren't in the branch to be deleted (which isn't allowed).
-2.	Next, at the command prompt, type `git branch -d <branch name>`. This deletes the branch on your computer only if it has been successfully merged to the upstream repository. (You can override this behavior with the `–D` flag, but first be sure you want to do this.)
-3.	Finally, type `git push origin :<branch name>` at the command prompt (a space before the colon and no space after it).  This will delete the branch on your github fork.
+1. In the Git Bash command prompt, type `git checkout main`. This ensures that you aren't in the branch to be deleted (which isn't allowed).
+2. Next, at the command prompt, type `git branch -d <branch name>`. This deletes the branch on your computer only if it has been successfully merged to the upstream repository. (You can override this behavior with the `–D` flag, but first be sure you want to do this.)
+3. Finally, type `git push origin :<branch name>` at the command prompt (a space before the colon and no space after it).  This will delete the branch on your github fork.
 
 Congratulations, you have successfully contributed to the project!
 
@@ -173,7 +172,6 @@ Congratulations, you have successfully contributed to the project!
 ### Article template
 
 The [markdown template](/articles/0-markdown-template-for-new-articles.md) contains the basic Markdown for a topic that includes a table of contents, sections with subheadings, links to other Office developer topics, links to other sites, bold text, italic text, numbered and bulleted lists, code snippets, and images.
-
 
 ### Standard Markdown
 

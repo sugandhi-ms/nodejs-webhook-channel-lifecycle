@@ -45,23 +45,10 @@ See your cloud provider's documentation for details about how to host a web appl
 
 ### Application registration on Azure Portal
 
-The application in Azure must redirect your users to your application in the cloud. Use the following parameters to register your application with the [Office 365 app registration tool](http://dev.office.com/app-registration):
-
-|     Parameter   |              Value                 |
-|----------------:|:-----------------------------------|
-|        App type | Web App                            |
-|     Sign on URL | http://cloud_service_URL>          |
-|    Redirect URI | http://cloud_service_URL>/callback |
-| App permissions | Mail.Read                          |
-
-Copy and store the **Client ID** and **Client Secret** values.
+The application in Azure must redirect your users to your application in the cloud. Add the URL to your deployed application as a redirect URI on your app registration in the Azure portal. For example: `https://yourapp.domain.com/callback`.
 
 ### Notification URL in file constants.js
 
-Update the **notificationUrl** value in the file [`constants.js`](https://github.com/OfficeDev/Microsoft-Graph-Nodejs-Webhooks/blob/main/constants.js#L10) file to
-
-```
-http://<cloud_service_URL>/listen
-```
+Update the **notificationUrl** value in the file [`constants.js`](/constants.js) file to the `/listen` path on your deployed application's domain. For example, `https://yourapp.domain.com/listen`.
 
 From here, you can run `npm install && npm start` to install dependencies and start the application.

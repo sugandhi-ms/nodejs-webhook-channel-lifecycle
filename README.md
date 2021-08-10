@@ -63,8 +63,8 @@ To use the Webhook sample, you need the following:
 
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
 1. If your account is present in more than one Azure AD tenant:
-   1. Select your profile from the menu on the top right corner of the page, and then **Switch directory**.
-   1. Change your session to the Azure AD tenant where you want to create your application.
+    1. Select your profile from the menu on the top right corner of the page, and then **Switch directory**.
+    1. Change your session to the Azure AD tenant where you want to create your application.
 
 #### Register the app
 
@@ -73,43 +73,43 @@ To use the Webhook sample, you need the following:
 
    ![AadAppCreate3](docs/ad3.png)
 1. When the **Register an application page** appears, enter your app's registration information:
-   1. In the **Name** section, enter a meaningful name that will be displayed to users of the app. For example: `MyWebApp`.
-   1. In the **Supported account types** section, select **Accounts in any organizational directory (Any Azure AD directory) and personal Microsoft accounts (e.g. Skype, Xbox)**.
-      > You can leave the redirect URI empty, you'll add these from the **Authentication** tab later after the app has been successfully created.
+    1. In the **Name** section, enter a meaningful name that will be displayed to users of the app. For example: `MyWebApp`.
+    1. In the **Supported account types** section, select **Accounts in any organizational directory (Any Azure AD directory) and personal Microsoft accounts (e.g. Skype, Xbox)**.
 
-      ![AadAppCreate4](docs/ad4.png)
+        > You can leave the redirect URI empty, you'll add these from the **Authentication** tab later after the app has been successfully created.
+
+        ![AadAppCreate4](docs/ad4.png)
 1. Select **Register** to create the app.
 1. On the app's **Overview** page, find the **Application (client) ID** value and record it for later. You'll need this value to configure the Visual Studio configuration file for this project.
 1. In the list of pages for the app, select **Authentication**. (this step is only required if you are using a user-delegated authentication):
-   1. In the **Redirect URIs** section, select **Web** in the combo-box and enter the following redirect URIs:
-      - `http://localhost:3000/callback`
+    1. In the **Redirect URIs** section, select **Web** in the combo-box and set the value to `http://localhost:3000/callback`.
 
-      ![AadAppCreate4b](docs/ad4b.png)
+        ![AadAppCreate4b](docs/ad4b.png)
 1. Select **Save**.
 1. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**.
-   1. Enter a key description (of instance `app secret`).
-   1. Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
-   1. When you click the **Add** button, the key value will be displayed. Copy the key value and save it in a safe location.
+    1. Enter a key description (of instance `app secret`).
+    1. Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
+    1. When you click the **Add** button, the key value will be displayed. Copy the key value and save it in a safe location.
 
-      You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means, so record it as soon as it is visible from the Azure portal.
+        You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means, so record it as soon as it is visible from the Azure portal.
 
-      ![AadAppCreate5](docs/ad5.png)
+        ![AadAppCreate5](docs/ad5.png)
 
 1. In the list of pages for the app, select **API permissions**.
-   1. Click the **Add a permission** button and then make sure that the **Microsoft APIs** tab is selected.
-   1. In the **Commonly used Microsoft APIs** section, select **Microsoft Graph**.
-   1. In the **Application permissions** section, make sure that the **Mail.Read** permission is checked. Use the search box if necessary.
-      > Also, in the **Delegated permissions** section, check the User.Read delegated permission for Azure Active Directory, so users can sign into the app to initiate the subscription process.
-      > *Note: for other resources you need to select different permissions as documented [here](https://docs.microsoft.com/graph/api/subscription-post-subscriptions?view=graph-rest-beta&tabs=http#permissions)*
-      > *Note: depending on which authentication type you chose (app-only or user delegated) you need to select the corresponding permission **from the correct permission type**.*
-   1. Select the **Add permissions** button.
-   1. Select **Grant admin consent for `name of your organization>`** and **Yes**. This grants consent to the permissions of the application registration you just created to the current organization.
+    1. Click the **Add a permission** button and then make sure that the **Microsoft APIs** tab is selected.
+    1. In the **Commonly used Microsoft APIs** section, select **Microsoft Graph**.
+    1. In the **Application permissions** section, make sure that the **Mail.Read** permission is checked. Use the search box if necessary.
+        > Also, in the **Delegated permissions** section, check the User.Read delegated permission for Azure Active Directory, so users can sign into the app to initiate the subscription process.
+        > *Note: for other resources you need to select different permissions as documented [here](https://docs.microsoft.com/graph/api/subscription-post-subscriptions?view=graph-rest-beta&tabs=http#permissions)*
+        > *Note: depending on which authentication type you chose (app-only or user delegated) you need to select the corresponding permission **from the correct permission type**.*
+    1. Select the **Add permissions** button.
+    1. Select **Grant admin consent for `name of your organization>`** and **Yes**. This grants consent to the permissions of the application registration you just created to the current organization.
 
 ### Set up the ngrok proxy (optional)
 
 You must expose a public HTTPS endpoint to create a subscription and receive notifications from Microsoft Graph. While testing, you can use ngrok to temporarily allow messages from Microsoft Graph to tunnel to a *localhost* port on your computer.
 
-You can use the ngrok web interface (http://127.0.0.1:4040) to inspect the HTTP traffic that passes through the tunnel. To learn more about using ngrok, see the [ngrok website](https://ngrok.com/).
+You can use the ngrok web interface `http://127.0.0.1:4040` to inspect the HTTP traffic that passes through the tunnel. To learn more about using ngrok, see the [ngrok website](https://ngrok.com/).
 
 1. [Download ngrok](https://ngrok.com/download) for Windows.
 
@@ -117,19 +117,19 @@ You can use the ngrok web interface (http://127.0.0.1:4040) to inspect the HTTP 
 
 1. Run the command in the ngrok console.
 
-   `ngrok http 3000 -host-header=rewrite`
+    `ngrok http 3000 -host-header=rewrite`
 
-   ![Example command to run in the ngrok console](docs/ngrok1.PNG)
+    ![Example command to run in the ngrok console](docs/ngrok1.PNG)
 
 1. Copy the HTTPS URL that's shown in the console. You'll use this to configure your notification URL in the sample.
 
-   ![The forwarding HTTPS URL in the ngrok console](docs/ngrok2.PNG)
+    ![The forwarding HTTPS URL in the ngrok console](docs/ngrok2.PNG)
 
 Keep the console open while testing. If you close it, the tunnel also closes and you'll need to generate a new URL and update the sample.
 
 You'll need the `NGROK_ID` value in the next section.
 
->See [troubleshooting](./TROUBLESHOOTING.md) for more information about using tunnels.
+> See [troubleshooting](./TROUBLESHOOTING.md) for more information about using tunnels.
 
 ### Configure and run the sample
 
@@ -154,11 +154,13 @@ You'll need the `NGROK_ID` value in the next section.
     ```Shell
     npm start
     ```
+
     > **Note:** You can also make the application wait for a debugger. To wait for a debugger, use the following command instead:
     >
     > ```Shell
     > npm run debug
     > ```
+    >
     > You can also attach the debugger included in Microsoft Visual Studio Code. For more information, see [Debugging in Visual Studio Code](https://code.visualstudio.com/Docs/editor/debugging).
 
 1. Open a browser and go to [http://localhost:3000](http://localhost:3000).
@@ -177,7 +179,7 @@ You'll need the `NGROK_ID` value in the next section.
 
 1. Sign in as a tenant admin and consent to the **Read mail in all mailboxes** and **Sign in and read user profile** permissions. You'll be redirected back to the sample's home page.
 
-   At this point, any user in your tenant can sign in and create a subscription. If you don't grant admin permissions first, you'll receive an *Unauthorized* error. You'll need to open the sample in a new browser session because this sample caches the initial token.
+    At this point, any user in your tenant can sign in and create a subscription. If you don't grant admin permissions first, you'll receive an *Unauthorized* error. You'll need to open the sample in a new browser session because this sample caches the initial token.
 
 After completing the steps documented above, the subscription will be created and you will be redirected to a page displaying any notification being received.
 
@@ -187,7 +189,7 @@ After completing the steps documented above, the subscription will be created an
 
 1. Choose **Create subscription**. The **Subscription** page loads with information about the subscription.
 
-   >This sample sets the subscription expiration to 60 minutes for testing purposes.
+    > This sample sets the subscription expiration to 60 minutes for testing purposes.
 
 After completing the steps documented above, the subscription will be created and you will be redirected to a page displaying any notification being received.
 
