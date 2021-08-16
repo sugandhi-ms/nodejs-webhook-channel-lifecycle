@@ -50,7 +50,7 @@ The following are common tasks that an application performs with webhooks subscr
 To use the Webhook sample, you need the following:
 
 - [Node.js](https://nodejs.org/) version 12 or 14.
-- A [work or school account](http://dev.office.com/devprogram).
+- A [work or school account](https://developer.microsoft.com/microsoft-365/dev-program).
 - The application ID and key from the application that you [register on the Azure Portal](#register-the-app).
 - A public HTTPS endpoint to receive and send HTTP requests. You can host this on Microsoft Azure or another service, or you can [use ngrok](#ngrok) or a similar tool while testing.
 - [OpenSSL](https://www.openssl.org/source/) when trying change notifications with resource data.
