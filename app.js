@@ -48,7 +48,7 @@ app.locals.msalClient = new msal.ConfidentialClientApplication(msalConfig);
 // suitable for production
 app.use(
   session({
-    secret: 'your_secret_value_here',
+    secret: process.env.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     unset: 'destroy',
