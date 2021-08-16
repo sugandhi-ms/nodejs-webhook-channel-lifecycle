@@ -14,12 +14,12 @@ If Microsoft Graph is not sending notifications, please open a [Stack Overflow](
 
 Known issue: Occasionally the notification is received, and the retrieved message is sent to NotificationService, but the SocketIo client in this sample does not update. When this happens, it's usually the first notification after the subscription is created.
 
-## You get a "Subscription validation request timed out" response
+## You get a "Subscription validation request failed" response
 
 This indicates that Microsoft Graph did not receive a validation response within the expected time frame (about 10 seconds).
 
 - Make sure that you are not paused in the debugger when the validation request is received.
-- If you're using ngrok, make sure that you used your project's HTTP port for the tunnel (not HTTPS).
+- If you're using ngrok, make sure that you used your project's HTTP port for the tunnel (not HTTPS), and ensure that the value of `NGROK_PROXY` matches your current active ngrok session.
 
 ## You get errors while installing packages
 
