@@ -118,7 +118,6 @@ Session.vim
 .netrwhist
 *~
 .settings
-.vscode
 .vs
 typings
 
@@ -126,3 +125,6 @@ typings
 .tmp/
 *.pfx
 *.pem
+
+# Environment variables
+.env
