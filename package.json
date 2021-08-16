@@ -1,23 +1,28 @@
 {
-  "name": "microsoft-graph-webhook-nodejs",
-  "version": "1.0.0",
+  "name": "nodejs-change-notifications-sample",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "babel index.js helpers routes app.js constants.js -d .tmp --config-file ./babel.config.json",
-    "start": "mocha ./tests/confTest.js && babel-node --config-file ./babel.config.json ./index",
-    "debug": "mocha ./tests/confTest.js && babel-node --config-file ./babel.config.json --debug-brk ./index",
-    "lint": "eslint ."
+    "test": "mocha ./tests/configTests.js",
+    "lint": "prettier --check **/**.js",
+    "format": "prettier --write **/**.js",
+    "start": "npm run test && node ./bin/www"
   },
   "dependencies": {
     "@azure/msal-node": "^1.3.0",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
-    "body-parser": "^1.19.0",
-    "cross-fetch": "^3.1.4",
-    "escape-html": "^1.0.3",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "^4.3.2",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "express-rate-limit": "^5.3.0",
+    "express-promise-router": "^4.1.0",
+    "express-session": "^1.17.2",
+    "http-errors": "^1.8.0",
+    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.0.4",
+    "mocha": "^9.0.3",
     "morgan": "^1.10.0",
     "pem": "^1.14.4",
     "pug": "^3.0.2",
@@ -25,23 +30,6 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.15.0",
-    "@babel/node": "^7.14.9",
-    "@babel/preset-env": "^7.15.0",
-    "@types/body-parser": "^1.19.1",
-    "@types/escape-html": "^1.0.1",
-    "@types/express": "^4.17.13",
-    "@types/express-rate-limit": "^5.1.3",
-    "@types/jsonwebtoken": "^8.5.4",
-    "@types/morgan": "^1.9.3",
-    "@types/pem": "^1.9.6",
-    "@types/pug": "^2.0.5",
-    "@types/socket.io": "^3.0.2",
-    "@types/sqlite3": "^3.1.7",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "mocha": "^9.0.3"
+    "prettier": "^2.3.2"
   }
 }

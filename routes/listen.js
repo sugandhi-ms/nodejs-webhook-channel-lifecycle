@@ -1,108 +1,140 @@
-import express from 'express';
-import escape from 'escape-html';
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
-import { ioServer } from '../helpers/socketHelper';
-import { SubscriptionManagementService } from '../helpers/requestHelper';
-import { getSubscription } from '../helpers/dbHelper';
-import { subscriptionConfiguration, certificateConfiguration, msalConfiguration } from '../constants';
-import { decryptSymetricKey, decryptPayload, verifySignature } from '../helpers/certificateHelper';
-import { isTokenValid } from '../helpers/tokenHelper';
+const router = require('express-promise-router')();
+const graph = require('../helpers/graphHelper');
+const ioServer = require('../helpers/socketHelper');
+const dbHelper = require('../helpers/dbHelper');
+const tokenHelper = require('../helpers/tokenHelper');
+const certHelper = require('../helpers/certHelper');
 
-export const listenRouter = express.Router();
+// POST /listen
+router.post('/', async function (req, res) {
+  // This is the notification endpoint Microsoft Graph sends notifications to
 
-/* Default listen route */
-listenRouter.post('/', async (req, res, next) => {
-  let status;
-  let clientStatesValid;
-
-  // If there's a validationToken parameter in the query string,
-  // then this is the request that Office 365 sends to check
-  // that this is a valid endpoint.
-  // Just send the validationToken back.
+  // If there is a validationToken parameter
+  // in the query string, this is the endpoint validation
+  // request sent by Microsoft Graph. Return the token
+  // as plain text with a 200 response
+  // https://docs.microsoft.com/graph/webhooks#notification-endpoint-validation
   if (req.query && req.query.validationToken) {
-    res.send(escape(req.query.validationToken));
-    // Send a status of 'Ok'
-    status = 200;
-  } else {
-    clientStatesValid = false;
+    res.set('Content-Type', 'text/plain');
+    res.send(req.query.validationToken);
+    return;
+  }
 
-    // First, validate all the clientState values in array
+  console.log(JSON.stringify(req.body, null, 2));
+
+  // Check for validation tokens, validate them if present
+  let areTokensValid = true;
+  if (req.body.validationTokens) {
+    const appId = process.env.OAUTH_CLIENT_ID;
+    const tenantId = process.env.OAUTH_TENANT_ID;
+    const validationResults = await Promise.all(
+      req.body.validationTokens.map((token) =>
+        tokenHelper.isTokenValid(token, appId, tenantId)
+      )
+    );
+
+    areTokensValid = validationResults.reduce((x, y) => x && y);
+  }
+
+  if (areTokensValid) {
     for (let i = 0; i < req.body.value.length; i++) {
-      const clientStateValueExpected = subscriptionConfiguration.clientState;
+      const notification = req.body.value[i];
 
-      if (req.body.value[i].clientState !== clientStateValueExpected) {
-        // If just one clientState is invalid, we discard the whole batch
-        clientStatesValid = false;
-        break;
-      } else {
-        clientStatesValid = true;
-      }
-    }
-
-    // if we're receiving notifications with resource data we have to validate the origin of the request by validating the tokens
-    let areTokensValid = true;
-    if (req.body.validationTokens) {
-      const validationResults = await Promise.all(req.body.validationTokens.map((x) => isTokenValid(x, msalConfiguration.clientID, msalConfiguration.tenantID)));
-      areTokensValid = validationResults.reduce((x, y) => x && y);
-    }
-
-    // If all the clientStates are valid, then process the notification
-    if (clientStatesValid && areTokensValid) {
-      for (let i = 0; i < req.body.value.length; i++) {
-        const resource = req.body.value[i].resource;
-        const subscriptionId = req.body.value[i].subscriptionId;
-
-        if (req.body.value[i].encryptedContent) {
-          // we have a notification with resource data, let's decrypt the enclosed data
-          // eslint-disable-next-line no-loop-func
-          const decryptedSymetricKey = decryptSymetricKey(req.body.value[i].encryptedContent.dataKey, certificateConfiguration.relativeKeyPath);
-          const isSignatureValid = verifySignature(req.body.value[i].encryptedContent.dataSignature, req.body.value[i].encryptedContent.data, decryptedSymetricKey);
-          if (isSignatureValid) {
-            // the signature is valid, data hasn't been tampered with. We can proceed to displaying the data
-            const decryptedPayload = decryptPayload(req.body.value[i].encryptedContent.data, decryptedSymetricKey);
-            emitNotification(subscriptionId, JSON.parse(decryptedPayload));
-          } // otherwise data is invalid, ignore it
-        } else {
-          // we have a plain notification that doesn't contain data, let's call Microsoft Graph to get the resource data
-          processNotification(subscriptionId, resource, res, next);
+      // Verify the client state matches the expected value
+      if (notification.clientState == process.env.SUBSCRIPTION_CLIENT_STATE) {
+        // Verify we have a matching subscription record in the database
+        const subscription = await dbHelper.getSubscription(
+          notification.subscriptionId
+        );
+        if (subscription) {
+          // If notification has encrypted content, process that
+          if (notification.encryptedContent) {
+            processEncryptedNotification(notification);
+          } else {
+            await processNotification(
+              notification,
+              req.app.locals.msalClient,
+              subscription.userAccountId
+            );
+          }
         }
       }
-      // Send a status of 'Accepted'
-      status = 202;
-    } else {
-      // Since the clientState field doesn't have the expected value,
-      // or the validation tokens are invalid for notifications with data
-      // this request might NOT come from Microsoft Graph.
-      // However, you should still return the same status that you'd
-      // return to Microsoft Graph to not alert possible impostors
-      // that you have discovered them.
-      status = 202;
     }
   }
-  res.status(status).end();
-});
 
+  res.status(202).end();
+});
+/**
+ * Processes an encrypted notification
+ * @param  {object} notification - The notification containing encrypted content
+ */
+function processEncryptedNotification(notification) {
+  // Decrypt the symmetric key sent by Microsoft Graph
+  const symmetricKey = certHelper.decryptSymmetricKey(
+    notification.encryptedContent.dataKey,
+    process.env.PRIVATE_KEY_PATH
+  );
+
+  // Validate the signature on the encrypted content
+  const isSignatureValid = certHelper.verifySignature(
+    notification.encryptedContent.dataSignature,
+    notification.encryptedContent.data,
+    symmetricKey
+  );
+
+  if (isSignatureValid) {
+    // Decrypt the payload
+    const decryptedPayload = certHelper.decryptPayload(
+      notification.encryptedContent.data,
+      symmetricKey
+    );
+
+    // Send the notification to the Socket.io room
+    emitNotification(notification.subscriptionId, {
+      type: 'chatMessage',
+      resource: JSON.parse(decryptedPayload),
+    });
+  }
+}
+/**
+ * Process a non-encrypted notification
+ * @param  {object} notification - The notification to process
+ * @param  {IConfidentialClientApplication} msalClient - The MSAL client to retrieve tokens for Graph requests
+ * @param  {string} userAccountId - The user's account ID
+ */
+async function processNotification(notification, msalClient, userAccountId) {
+  // Get the message ID
+  const messageId = notification.resourceData.id;
+
+  const client = graph.getGraphClientForUser(msalClient, userAccountId);
+
+  try {
+    // Get the message from Graph
+    const message = await client
+      .api(`/me/messages/${messageId}`)
+      .select('subject,id')
+      .get();
+
+    // Send the notification to the Socket.io room
+    emitNotification(notification.subscriptionId, {
+      type: 'message',
+      resource: message,
+    });
+  } catch (err) {
+    console.log(`Error getting message with ${messageId}:`);
+    console.error(err);
+  }
+}
+/**
+ * Sends a notification to a Socket.io room
+ * @param  {string} subscriptionId - The subscription ID used to send to the correct room
+ * @param  {object} data - The data to send to the room
+ */
 function emitNotification(subscriptionId, data) {
   ioServer.to(subscriptionId).emit('notification_received', data);
 }
 
-// Get subscription data from the database
-// Retrieve the entity from Microsoft Graph.
-// Send the message data to the socket.
-function processNotification(subscriptionId, resource, res, next) {
-  getSubscription(subscriptionId, async (dbError, subscriptionData) => {
-    if (subscriptionData) {
-      try {
-        const subscriptionManagementService = new SubscriptionManagementService(subscriptionData.accessToken);
-        const endpointData = await subscriptionManagementService.getData(resource);
-        emitNotification(subscriptionId, endpointData);
-      } catch (requestError) {
-        res.status(500);
-        next(requestError);
-      }
-    } else if (dbError) {
-      res.status(500);
-      next(dbError);
-    }
-  });
-}
+module.exports = router;

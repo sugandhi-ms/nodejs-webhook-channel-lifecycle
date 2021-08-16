@@ -10,10 +10,8 @@ debug, Copyright (c) by TJ Holowaychuk, is available under [The MIT License](htt
 
 express, Copyright (c) by Douglas Christopher Wilson, is available under [The MIT License](https://raw.githubusercontent.com/strongloop/express/master/LICENSE).
 
-jade, Copyright (c) by TJ Holowaychuk, is available under [The MIT License](https://raw.githubusercontent.com/jadejs/jade/master/LICENSE).
-
 morgan, Copyright (c) by Douglas Christopher Wilson, is available under [The MIT License](https://raw.githubusercontent.com/expressjs/morgan/master/LICENSE).
 
-serve-favicon, Copyright (c) by Douglas Christopher Wilson, is available under [The MIT License](https://raw.githubusercontent.com/expressjs/serve-favicon/master/LICENSE).
+pug, Copyright (c) by TJ Holowaychuk, is available under [The MIT License](https://raw.githubusercontent.com/pugjs/pug/master/packages/pug/LICENSE).
 
 socket.io, Copyright (c) by Automattic, is available under [The MIT License](https://raw.githubusercontent.com/socketio/socket.io/master/LICENSE).

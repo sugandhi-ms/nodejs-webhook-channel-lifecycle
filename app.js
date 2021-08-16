@@ -1,66 +1,107 @@
-import express from 'express';
-import path from 'path';
-import logger from 'morgan';
-import bodyParser from 'body-parser';
-import RateLimit from 'express-rate-limit';
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
-import { authRouter } from './routes/auth';
-import { listenRouter } from './routes/listen';
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const session = require('express-session');
+const flash = require('connect-flash');
+const msal = require('@azure/msal-node');
+require('dotenv').config();
 
-export const app = express();
+const dbHelper = require('./helpers/dbHelper');
+dbHelper.ensureDatabase();
 
-const limiter = new RateLimit({
-  windowMs: 2 * 60 * 1000, // 2 minutes
-  max: 2400, // 20 rps, these values should be adjusted for production use depending on your infrastructure and the volume of notifications you expect
+const indexRouter = require('./routes/index');
+const delegatedRouter = require('./routes/delegated');
+const appOnlyRouter = require('./routes/apponly');
+const listenRouter = require('./routes/listen');
+const watchRouter = require('./routes/watch');
+
+const app = express();
+
+// MSAL config
+const msalConfig = {
+  auth: {
+    clientId: process.env.OAUTH_CLIENT_ID,
+    authority: `${process.env.OAUTH_AUTHORITY}/${process.env.OAUTH_TENANT_ID}`,
+    clientSecret: process.env.OAUTH_CLIENT_SECRET,
+  },
+  system: {
+    loggerOptions: {
+      loggerCallback(loglevel, message, containsPii) {
+        console.log(message);
+      },
+      piiLoggingEnabled: false,
+      logLevel: msal.LogLevel.Error,
+    },
+  },
+};
+
+// Create msal application object
+app.locals.msalClient = new msal.ConfidentialClientApplication(msalConfig);
+
+// Session middleware
+// NOTE: Uses default in-memory session store, which is not
+// suitable for production
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    unset: 'destroy',
+  })
+);
+
+// Flash middleware
+app.use(flash());
+app.use(function (req, res, next) {
+  // Read any flashed errors and save
+  // in the response locals
+  res.locals.errors = req.flash('error_msg');
+
+  // Check for simple error string and
+  // convert to layout's expected format
+  const errs = req.flash('error');
+  for (const err in errs) {
+    res.locals.errors.push({ message: 'An error occurred', debug: err });
+  }
+
+  next();
 });
-
-const env = process.env.NODE_ENV || 'development';
-app.locals.ENV = env;
-app.locals.ENV_DEVELOPMENT = (env === 'development');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', authRouter);
+app.use('/', indexRouter);
+app.use('/delegated', delegatedRouter);
+app.use('/apponly', appOnlyRouter);
 app.use('/listen', listenRouter);
-app.use(limiter);
+app.use('/watch', watchRouter);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
-// error handlers
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use((err, req, res) => {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err,
-      title: 'error'
-    });
-  });
-} else {
-  // production error handler
-  // no stack traces leaked to user
-  app.use((err, req, res) => {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: { },
-      title: 'error'
-    });
-  });
-}
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;

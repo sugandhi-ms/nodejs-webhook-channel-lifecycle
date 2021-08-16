@@ -1,99 +1,156 @@
-import fs from 'fs';
-import sql from 'sqlite3';
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
-const dbFile = './helpers/database.sqlite3';
-const sqlite3 = sql.verbose();
+const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
 
-/**
- * Create SQLite3 table Subscription.
- */
-export function createDatabase() {
-  const dbExists = fs.existsSync(dbFile);
-  const db = new sqlite3.Database(dbFile);
-  const createSubscriptionStatement = 'CREATE TABLE Subscription ('
-    + 'SubscriptionId TEXT NOT NULL, '
-    + 'AccessToken TEXT NOT NULL, '
-    + 'Resource TEXT NOT NULL, '
-    + 'ChangeType TEXT NOT NULL, '
-    + 'ClientState TEXT NOT NULL, '
-    + 'NotificationUrl TEXT NOT NULL, '
-    + 'SubscriptionExpirationDateTime TEXT NOT NULL'
-    + ')';
+// Relative path to the subscription database
+const dbFile = './helpers/subscriptions.sqlite3';
 
-  db.serialize(() => {
-    if (!dbExists) {
-      db.run(
-        createSubscriptionStatement,
-        [],
-        error => {
-          if (error !== null) throw error;
-        }
-      );
-    }
-  });
-  db.close();
-}
+module.exports = {
+  /**
+   * Creates and initializes the subscription database if it does not
+   * already exist
+   */
+  ensureDatabase: () => {
+    const dbExists = fs.existsSync(dbFile);
+    const db = new sqlite3.Database(dbFile);
+    const createSubscriptionStatement =
+      'CREATE TABLE Subscription (' +
+      'SubscriptionId TEXT NOT NULL, ' +
+      'UserAccountId TEXT NOT NULL' +
+      ')';
 
-export function getSubscription(subscriptionId, callback) {
-  const db = new sqlite3.Database(dbFile);
-  const getUserDataStatement = 'SELECT '
-    + 'SubscriptionId as subscriptionId, '
-    + 'AccessToken as accessToken, '
-    + 'Resource as resource, '
-    + 'ChangeType as changeType, '
-    + 'ClientState as clientState, '
-    + 'NotificationUrl as notificationUrl, '
-    + 'SubscriptionExpirationDateTime as subscriptionExpirationDateTime '
-    + 'FROM Subscription '
-    + 'WHERE SubscriptionId = $subscriptionId '
-    + 'AND SubscriptionExpirationDateTime > datetime(\'now\')';
+    db.serialize(() => {
+      if (!dbExists) {
+        db.run(createSubscriptionStatement, (error) => {
+          if (error) throw error;
+        });
+      }
+    });
 
-  db.serialize(() => {
-    db.get(
-      getUserDataStatement,
-      {
-        $subscriptionId: subscriptionId
-      },
-      callback
-    );
-  });
-}
+    db.close();
+  },
+  /**
+   * Gets a single subscription by ID
+   * @param  {string} subscriptionId - The ID of the subscription to get
+   * @returns {object} The subscription
+   */
+  getSubscription: async (subscriptionId) => {
+    const db = new sqlite3.Database(dbFile);
+    const selectStatement =
+      'SELECT ' +
+      'SubscriptionId as subscriptionId, ' +
+      'UserAccountId as userAccountId ' +
+      'FROM Subscription ' +
+      'WHERE SubscriptionId = $subscriptionId';
 
-export function saveSubscription(subscriptionData, callback) {
-  const db = new sqlite3.Database(dbFile);
-  const insertStatement = 'INSERT INTO Subscription '
-    + '(SubscriptionId, AccessToken, Resource, ChangeType, '
-    + 'ClientState, NotificationUrl, SubscriptionExpirationDateTime) '
-    + 'VALUES ($subscriptionId, $accessToken, $resource, $changeType, '
-    + '$clientState, $notificationUrl, $subscriptionExpirationDateTime)';
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.get(
+          selectStatement,
+          {
+            $subscriptionId: subscriptionId,
+          },
+          (err, row) => {
+            if (err) {
+              reject(`Database error: ${err.message}`);
+            } else {
+              resolve(row);
+            }
+          }
+        );
+      });
+    });
+  },
+  /**
+   * Gets all subscriptions for a user account
+   * @param  {string} userAccountId - The user account ID
+   * @returns {Array} An array of subscriptions for the user
+   */
+  getSubscriptionsByUserAccountId: async (userAccountId) => {
+    const db = new sqlite3.Database(dbFile);
+    const selectStatement =
+      'SELECT ' +
+      'SubscriptionId as subscriptionId, ' +
+      'UserAccountId as userAccountId ' +
+      'FROM Subscription ' +
+      'WHERE UserAccountId = $userAccountId';
 
-  db.serialize(() => {
-    db.run(
-      insertStatement,
-      {
-        $subscriptionId: subscriptionData.id,
-        $accessToken: subscriptionData.accessToken,
-        $resource: subscriptionData.resource,
-        $clientState: subscriptionData.clientState,
-        $changeType: subscriptionData.changeType,
-        $notificationUrl: subscriptionData.notificationUrl,
-        $subscriptionExpirationDateTime: subscriptionData.expirationDateTime
-      },
-      callback
-    );
-  });
-}
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.all(
+          selectStatement,
+          {
+            $userAccountId: userAccountId,
+          },
+          (err, rows) => {
+            if (err) {
+              reject(`Database error: ${err.message}`);
+            } else {
+              resolve(rows);
+            }
+          }
+        );
+      });
+    });
+  },
+  /**
+   * Adds a subscription to the database
+   * @param  {string} subscriptionId - The subscription ID
+   * @param  {string} userAccountId - The user account ID (use 'APP-ONLY' for subscriptions owned by the app)
+   */
+  addSubscription: async (subscriptionId, userAccountId) => {
+    const db = new sqlite3.Database(dbFile);
+    const insertStatement =
+      'INSERT INTO Subscription ' +
+      '(SubscriptionId, UserAccountId) ' +
+      'VALUES ($subscriptionId, $userAccountId)';
 
-export function deleteSubscription(subscriptionId, callback) {
-  const db = new sqlite3.Database(dbFile);
-  const deleteStatement = 'DELETE FROM Subscription WHERE '
-    + 'SubscriptionId = $subscriptionId';
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.run(
+          insertStatement,
+          {
+            $subscriptionId: subscriptionId,
+            $userAccountId: userAccountId,
+          },
+          (err) => {
+            if (err) {
+              reject(`Database error: ${err.message}`);
+            } else {
+              resolve(true);
+            }
+          }
+        );
+      });
+    });
+  },
+  /**
+   * Deletes a subscription from the database
+   * @param  {string} subscriptionId - The ID of the subscription to delete
+   */
+  deleteSubscription: async (subscriptionId) => {
+    const db = new sqlite3.Database(dbFile);
+    const deleteStatement =
+      'DELETE FROM Subscription WHERE ' + 'SubscriptionId = $subscriptionId';
 
-  db.serialize(() => {
-    db.run(
-      deleteStatement,
-      { $subscriptionId: subscriptionId },
-      callback
-    );
-  });
-}
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.run(
+          deleteStatement,
+          {
+            $subscriptionId: subscriptionId,
+          },
+          (err) => {
+            if (err) {
+              reject(`Database error: ${err.message}`);
+            } else {
+              resolve(true);
+            }
+          }
+        );
+      });
+    });
+  },
+};
