@@ -4,6 +4,7 @@ products:
 - office-outlook
 - office-365
 - ms-graph
+- ms-graph-webhooks
 - office-teams
 - m365
 languages:
