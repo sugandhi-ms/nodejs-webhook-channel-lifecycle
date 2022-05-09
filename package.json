@@ -21,7 +21,7 @@
     "http-errors": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^2.1.0",
+    "jwks-rsa": "^2.1.1",
     "mocha": "^10.0.0",
     "morgan": "^1.10.0",
     "pem": "^1.14.6",
