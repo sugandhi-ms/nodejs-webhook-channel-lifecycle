@@ -1,25 +1,25 @@
 ---
 page_type: sample
 products:
-- office-outlook
-- office-365
 - ms-graph
-- ms-graph-webhooks
+- microsoft-graph-mail-api
+- microsoft-graph-teamwork-api
+- office-exchange-online
+- azure-active-directory
 - office-teams
-- m365
 languages:
 - nodejs
 - javascript
-description: "This sample NodeJS web application shows how to subscribe to change notifications using webhooks. This sample also supports receiving change notifications with data, validating and decrypting the payload."
+description: Create Microsoft Graph webhook subscriptions for a Node.js Express app, so that it can receive notifications of changes for any resource. This sample also supports receiving change notifications with data, validating and decrypting the payload.
 extensions:
   contentType: samples
   technologies:
   - Microsoft Graph
-  - Microsoft identity platform
   services:
-  - Outlook
+  - Microsoft Teams
+  - Azure AD
   - Office 365
-  - Microsoft identity platform
+  - Change notifications
   createdDate: 3/9/2016 4:12:18 PM
 ---
 # Microsoft Graph Webhooks Sample for Node.js
