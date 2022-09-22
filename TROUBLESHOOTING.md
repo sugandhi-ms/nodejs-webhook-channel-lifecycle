@@ -6,6 +6,10 @@ This document covers some of the common issues you may encounter when running th
 
 Make sure that your app registration includes the required permission for Microsoft Graph (as described in the [Register the app](README.md#register-the-app) section). This permission must be set before you try to create a subscription. Otherwise you'll get an error. Then, make sure a tenant administrator has granted consent to the application.
 
+## Error AADSTS50020 - User account from identity provider does not exist in tenant
+
+Update the *OAUTH_TENANT_ID* value in your .env file for "common" instead of the tenantid. if you still have the same error check the following article for more information: , [Troubleshoot article](https://learn.microsoft.com/en-us/troubleshoot/azure/active-directory/error-code-aadsts50020-user-account-identity-provider-does-not-exist).
+
 ## You do not receive notifications
 
 If you're using ngrok, you can use the web interface [http://127.0.0.1:4040](http://127.0.0.1:4040) to see whether the notification is being received. If you're not using ngrok, monitor the network traffic using the tools your hosting service provides, or try using ngrok.

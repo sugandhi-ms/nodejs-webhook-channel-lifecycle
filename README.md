@@ -131,7 +131,7 @@ You can use the ngrok web interface `http://127.0.0.1:4040` to inspect the HTTP 
 
 1. Replace `YOUR_CLIENT_SECRET_HERE` with the client secret of your registered Azure application.
 
-1. Replace `YOUR_TENANT_ID_HERE` with the tenant ID of your organization. This information can be found next to the client ID on the application management page.
+1. Replace `YOUR_TENANT_ID_HERE` with the tenant ID of your organization. This information can be found next to the client ID on the application management page, note: if you choose *Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)* replace this value for "common".
 
 1. Replace `YOUR_NGROK_URL_HERE` with the HTTPS ngrok URL you copied earlier.
 
