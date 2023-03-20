@@ -1,11 +1,13 @@
 {
   "cSpell.words": [
+    "apponly",
     "choco",
     "g",
     "holowaychuk",
     "jwks",
     "Multitenant",
     "raph",
-    "signin"
+    "signin",
+    "signout"
   ]
 }

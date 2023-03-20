@@ -30,7 +30,7 @@ router.get('/signin', async function (req, res) {
   }
 });
 
-// GET /delgated/callback
+// GET /delegated/callback
 router.get('/callback', async function (req, res) {
   // Microsoft identity platform redirects the browser here with the
   // authorization result
@@ -75,7 +75,7 @@ router.get('/callback', async function (req, res) {
     const subscription = await client.api('/subscriptions').create({
       changeType: 'created',
       notificationUrl: `${notificationHost}/listen`,
-      resource: 'me/mailfolders/inbox/messages',
+      resource: 'me/mailFolders/inbox/messages',
       clientState: process.env.SUBSCRIPTION_CLIENT_STATE,
       includeResourceData: false,
       expirationDateTime: new Date(Date.now() + 3600000).toISOString(),

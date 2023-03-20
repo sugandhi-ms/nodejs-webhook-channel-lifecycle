@@ -82,4 +82,25 @@ router.get('/subscribe', async function (req, res) {
   }
 });
 
+// GET /apponly/signout
+router.get('/signout', async function (req, res) {
+  // Delete the subscription from database and Graph
+  const subscriptionId = req.session.subscriptionId;
+  const msalClient = req.app.locals.msalClient;
+
+  await dbHelper.deleteSubscription(subscriptionId);
+
+  const client = graph.getGraphClientForApp(msalClient);
+
+  try {
+    await client.api(`/subscriptions/${subscriptionId}`).delete();
+
+    req.session.subscriptionId = null;
+  } catch (graphErr) {
+    console.log(`Error deleting subscription from Graph: ${graphErr.message}`);
+  }
+
+  res.redirect('/');
+});
+
 module.exports = router;

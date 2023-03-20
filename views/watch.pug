@@ -13,7 +13,7 @@ block content
            type='button'
            data-bs-toggle='collapse'
            data-bs-target='#subscriptionDisplay') Show subscription
-    a(class='btn btn-outline-secondary' href='/delegated/signout') Delete subscription
+    a(class='btn btn-outline-secondary' href=`${userMode ? 'delegated' : 'apponly'}/signout`) Delete subscription
   div(class='collapse mt-3' id='subscriptionDisplay')
     pre(class='wrapped-pre border bg-light p-2')
       code=JSON.stringify(subscription, null, 2)
@@ -31,4 +31,4 @@ block content
 
   script= `const subscriptionId = '${subscription.id}';`
   script(src='http://localhost:3001/socket.io/socket.io.js')
-  script(src='/javascripts/watch-client.js')
+  script(src='/javascript/watch-client.js')
