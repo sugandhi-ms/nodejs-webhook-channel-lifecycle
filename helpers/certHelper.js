@@ -14,7 +14,7 @@ function ensureOpenSsl() {
     const pathOpenSSL = process.env.OPENSSL_CONF
       ? process.env.OPENSSL_CONF.replace('.cfg', '.exe')
       : process.env.WINDOWS_OPENSSL_PATH ??
-      'C:/Program Files/OpenSSL-Win64/bin/openssl.exe';
+        'C:/Program Files/OpenSSL-Win64/bin/openssl.exe';
     pem.config({ pathOpenSSL: pathOpenSSL });
   }
 }
