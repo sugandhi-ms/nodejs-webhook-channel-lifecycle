@@ -137,6 +137,8 @@ You can use the ngrok web interface `http://127.0.0.1:4040` to inspect the HTTP 
 
 1. (Optional) - You can update the `CERTIFICATE_PATH`, `CERTIFICATE_ID`, `PRIVATE_KEY_PATH`, and `PRIVATE_KEY_PASSWORD` if desired.
 
+1. (Optional) - If you are running the sample on Windows, you can provide a path to **openssl.exe** in the `WINDOWS_OPENSSL_PATH` value in **.env**.
+
 1. Install the dependencies running the following command:
 
     ```Shell
