@@ -14,7 +14,7 @@ const ioServer = io(socketServer, {
     origin: [
       process.env.OAUTH_REDIRECT_URI.substring(
         0,
-        process.env.OAUTH_REDIRECT_URI.indexOf('/', 'https://'.length)
+        process.env.OAUTH_REDIRECT_URI.indexOf('/', 'https://'.length),
       ),
       process.env.NGROK_PROXY,
     ],

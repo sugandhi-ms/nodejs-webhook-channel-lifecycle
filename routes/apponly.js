@@ -14,7 +14,7 @@ router.get('/subscribe', async function (req, res) {
   await certHelper.createSelfSignedCertificateIfNotExists(
     process.env.CERTIFICATE_PATH,
     process.env.PRIVATE_KEY_PATH,
-    process.env.PRIVATE_KEY_PASSWORD
+    process.env.PRIVATE_KEY_PASSWORD,
   );
 
   // If in production, use the current host to receive notifications
@@ -55,7 +55,7 @@ router.get('/subscribe', async function (req, res) {
       // Microsoft Graph will use to encrypt their key
       // See https://docs.microsoft.com/graph/webhooks-with-resource-data#creating-a-subscription
       encryptionCertificate: certHelper.getSerializedCertificate(
-        process.env.CERTIFICATE_PATH
+        process.env.CERTIFICATE_PATH,
       ),
       encryptionCertificateId: process.env.CERTIFICATE_ID,
       expirationDateTime: new Date(Date.now() + 3600000).toISOString(),
@@ -64,7 +64,7 @@ router.get('/subscribe', async function (req, res) {
     // Save the subscription ID in the session
     req.session.subscriptionId = subscription.id;
     console.log(
-      `Subscribed to Teams channel messages, subscription ID: ${subscription.id}`
+      `Subscribed to Teams channel messages, subscription ID: ${subscription.id}`,
     );
 
     // Add subscription to the database

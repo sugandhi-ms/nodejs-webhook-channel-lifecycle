@@ -58,7 +58,7 @@ module.exports = {
             } else {
               resolve(row);
             }
-          }
+          },
         );
       });
     });
@@ -90,7 +90,7 @@ module.exports = {
             } else {
               resolve(rows);
             }
-          }
+          },
         );
       });
     });
@@ -121,7 +121,7 @@ module.exports = {
             } else {
               resolve(true);
             }
-          }
+          },
         );
       });
     });
@@ -148,7 +148,7 @@ module.exports = {
             } else {
               resolve(true);
             }
-          }
+          },
         );
       });
     });

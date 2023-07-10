@@ -17,7 +17,7 @@ router.get('/signin', async function (req, res) {
 
   try {
     const authUrl = await req.app.locals.msalClient.getAuthCodeUrl(
-      urlParameters
+      urlParameters,
     );
     res.redirect(authUrl);
   } catch (error) {
@@ -42,7 +42,7 @@ router.get('/callback', async function (req, res) {
 
   try {
     const response = await req.app.locals.msalClient.acquireTokenByCode(
-      tokenRequest
+      tokenRequest,
     );
 
     // Save the user's homeAccountId in their session
@@ -50,7 +50,7 @@ router.get('/callback', async function (req, res) {
 
     const client = graph.getGraphClientForUser(
       req.app.locals.msalClient,
-      req.session.userAccountId
+      req.session.userAccountId,
     );
 
     // Get the user's profile from Microsoft Graph
@@ -84,7 +84,7 @@ router.get('/callback', async function (req, res) {
     // Save the subscription ID in the session
     req.session.subscriptionId = subscription.id;
     console.log(
-      `Subscribed to user's inbox, subscription ID: ${subscription.id}`
+      `Subscribed to user's inbox, subscription ID: ${subscription.id}`,
     );
 
     // Add the subscription to the database
@@ -112,7 +112,7 @@ router.get('/signout', async function (req, res) {
 
   const client = graph.getGraphClientForUser(
     msalClient,
-    req.session.userAccountId
+    req.session.userAccountId,
   );
 
   try {

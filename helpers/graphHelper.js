@@ -15,7 +15,7 @@ module.exports = {
       throw new Error(
         `Invalid MSAL state. Client: ${
           msalClient ? 'present' : 'missing'
-        }, User Account ID: ${userAccountId ? 'present' : 'missing'}`
+        }, User Account ID: ${userAccountId ? 'present' : 'missing'}`,
       );
     }
 
