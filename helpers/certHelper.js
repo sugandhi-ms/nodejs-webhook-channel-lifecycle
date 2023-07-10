@@ -37,7 +37,7 @@ module.exports = {
   createSelfSignedCertificateIfNotExists: async (
     certPath,
     keyPath,
-    password
+    password,
   ) => {
     const certFullPath = path.join(__dirname, certPath);
     return new Promise((resolve, reject) => {
@@ -57,11 +57,11 @@ module.exports = {
               fs.writeFileSync(certFullPath, result.certificate);
               fs.writeFileSync(
                 path.join(__dirname, keyPath),
-                result.serviceKey
+                result.serviceKey,
               );
               resolve(true);
             }
-          }
+          },
         );
       } else {
         resolve(true);
@@ -91,7 +91,7 @@ module.exports = {
     const encryptedKey = Buffer.from(encodedKey, 'base64');
     const decryptedSymmetricKey = crypto.privateDecrypt(
       asymmetricKey,
-      encryptedKey
+      encryptedKey,
     );
     return decryptedSymmetricKey;
   },

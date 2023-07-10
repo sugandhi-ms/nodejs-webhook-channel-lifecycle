@@ -32,8 +32,8 @@ router.post('/', async function (req, res) {
     const tenantId = process.env.OAUTH_TENANT_ID;
     const validationResults = await Promise.all(
       req.body.validationTokens.map((token) =>
-        tokenHelper.isTokenValid(token, appId, tenantId)
-      )
+        tokenHelper.isTokenValid(token, appId, tenantId),
+      ),
     );
 
     areTokensValid = validationResults.reduce((x, y) => x && y);
@@ -47,7 +47,7 @@ router.post('/', async function (req, res) {
       if (notification.clientState == process.env.SUBSCRIPTION_CLIENT_STATE) {
         // Verify we have a matching subscription record in the database
         const subscription = await dbHelper.getSubscription(
-          notification.subscriptionId
+          notification.subscriptionId,
         );
         if (subscription) {
           // If notification has encrypted content, process that
@@ -57,7 +57,7 @@ router.post('/', async function (req, res) {
             await processNotification(
               notification,
               req.app.locals.msalClient,
-              subscription.userAccountId
+              subscription.userAccountId,
             );
           }
         }
@@ -75,21 +75,21 @@ function processEncryptedNotification(notification) {
   // Decrypt the symmetric key sent by Microsoft Graph
   const symmetricKey = certHelper.decryptSymmetricKey(
     notification.encryptedContent.dataKey,
-    process.env.PRIVATE_KEY_PATH
+    process.env.PRIVATE_KEY_PATH,
   );
 
   // Validate the signature on the encrypted content
   const isSignatureValid = certHelper.verifySignature(
     notification.encryptedContent.dataSignature,
     notification.encryptedContent.data,
-    symmetricKey
+    symmetricKey,
   );
 
   if (isSignatureValid) {
     // Decrypt the payload
     const decryptedPayload = certHelper.decryptPayload(
       notification.encryptedContent.data,
-      symmetricKey
+      symmetricKey,
     );
 
     // Send the notification to the Socket.io room

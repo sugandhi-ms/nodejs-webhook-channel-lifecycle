@@ -52,7 +52,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     unset: 'destroy',
-  })
+  }),
 );
 
 // Flash middleware
