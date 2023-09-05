@@ -16,9 +16,8 @@ router.get('/signin', async function (req, res) {
   };
 
   try {
-    const authUrl = await req.app.locals.msalClient.getAuthCodeUrl(
-      urlParameters,
-    );
+    const authUrl =
+      await req.app.locals.msalClient.getAuthCodeUrl(urlParameters);
     res.redirect(authUrl);
   } catch (error) {
     console.log(`Error: ${error}`);
@@ -41,9 +40,8 @@ router.get('/callback', async function (req, res) {
   };
 
   try {
-    const response = await req.app.locals.msalClient.acquireTokenByCode(
-      tokenRequest,
-    );
+    const response =
+      await req.app.locals.msalClient.acquireTokenByCode(tokenRequest);
 
     // Save the user's homeAccountId in their session
     req.session.userAccountId = response.account.homeAccountId;
