@@ -6,7 +6,7 @@ products:
 - microsoft-graph-teamwork-api
 - microsoft-graph-change-notifications-api
 - office-exchange-online
-- azure-active-directory
+- entra-id
 - office-teams
 languages:
 - nodejs
