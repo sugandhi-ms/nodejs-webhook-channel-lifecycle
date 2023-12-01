@@ -16,7 +16,7 @@ router.post('/', async function (req, res) {
   // in the query string, this is the endpoint validation
   // request sent by Microsoft Graph. Return the token
   // as plain text with a 200 response
-  // https://docs.microsoft.com/graph/webhooks#notification-endpoint-validation
+  // https://learn.microsoft.com/graph/webhooks#notification-endpoint-validation
   if (req.query && req.query.validationToken) {
     res.set('Content-Type', 'text/plain');
     res.send(req.query.validationToken);
