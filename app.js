@@ -19,6 +19,7 @@ const delegatedRouter = require('./routes/delegated');
 const appOnlyRouter = require('./routes/apponly');
 const listenRouter = require('./routes/listen');
 const watchRouter = require('./routes/watch');
+const lifecycleRouter = require('./routes/lifecycle');
 
 const app = express();
 
@@ -31,7 +32,7 @@ const msalConfig = {
   },
   system: {
     loggerOptions: {
-      loggerCallback(loglevel, message, containsPii) {
+      loggerCallback(logLevel, message, containsPii) {
         console.log(message);
       },
       piiLoggingEnabled: false,
@@ -87,6 +88,7 @@ app.use('/delegated', delegatedRouter);
 app.use('/apponly', appOnlyRouter);
 app.use('/listen', listenRouter);
 app.use('/watch', watchRouter);
+app.use('/lifecycle', lifecycleRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

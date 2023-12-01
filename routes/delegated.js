@@ -73,6 +73,7 @@ router.get('/callback', async function (req, res) {
     const subscription = await client.api('/subscriptions').create({
       changeType: 'created',
       notificationUrl: `${notificationHost}/listen`,
+      lifecycleNotificationUrl: `${notificationHost}/lifecycle`,
       resource: 'me/mailFolders/inbox/messages',
       clientState: process.env.SUBSCRIPTION_CLIENT_STATE,
       includeResourceData: false,

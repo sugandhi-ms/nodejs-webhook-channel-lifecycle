@@ -48,12 +48,13 @@ router.get('/subscribe', async function (req, res) {
     const subscription = await client.api('/subscriptions').create({
       changeType: 'created',
       notificationUrl: `${notificationHost}/listen`,
+      lifecycleNotificationUrl: `${notificationHost}/lifecycle`,
       resource: '/teams/getAllMessages',
       clientState: process.env.SUBSCRIPTION_CLIENT_STATE,
       includeResourceData: true,
       // To get resource data, we must provide a public key that
       // Microsoft Graph will use to encrypt their key
-      // See https://docs.microsoft.com/graph/webhooks-with-resource-data#creating-a-subscription
+      // See https://learn.microsoft.com/graph/webhooks-with-resource-data#creating-a-subscription
       encryptionCertificate: certHelper.getSerializedCertificate(
         process.env.CERTIFICATE_PATH,
       ),

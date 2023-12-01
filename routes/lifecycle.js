@@ -27,8 +27,10 @@ router.post('/', async function (req, res) {
 
     // Verify the client state matches the expected value
     // and that this is a lifecycle notification
-    if (notification.clientState === process.env.SUBSCRIPTION_CLIENT_STATE &&
-      notification.lifecycleEvent === 'reauthorizationRequired ') {
+    if (
+      notification.clientState === process.env.SUBSCRIPTION_CLIENT_STATE &&
+      notification.lifecycleEvent === 'reauthorizationRequired'
+    ) {
       // Verify we have a matching subscription record in the database
       const subscription = await dbHelper.getSubscription(
         notification.subscriptionId,
@@ -50,19 +52,19 @@ router.post('/', async function (req, res) {
  */
 async function renewSubscription(subscription, msalClient) {
   // Get the Graph client
-  const client = subscription.userAccountId === 'APP-ONLY' ?
-    graph.getGraphClientForApp(msalClient) :
-    graph.getGraphClientForUser(msalClient, userAccountId);
+  const client =
+    subscription.userAccountId === 'APP-ONLY'
+      ? graph.getGraphClientForApp(msalClient)
+      : graph.getGraphClientForUser(msalClient, subscription.userAccountId);
 
   try {
     // Update the expiration on the subscription
-    await client
-      .api(`/subscriptions/${subscription.id}`)
-      .update({
-        expirationDateTime: new Date(Date.now() + 3600000).toISOString(),
-      });
+    await client.api(`/subscriptions/${subscription.subscriptionId}`).update({
+      expirationDateTime: new Date(Date.now() + 3600000).toISOString(),
+    });
+    console.log(`Renewed subscription ${subscription.subscriptionId}`);
   } catch (err) {
-    console.log(`Error updating subscription ${subscription.id}:`);
+    console.log(`Error updating subscription ${subscription.subscriptionId}:`);
     console.error(err);
   }
 }

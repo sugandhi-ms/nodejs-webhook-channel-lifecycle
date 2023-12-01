@@ -27,18 +27,18 @@ extensions:
 
 [![Node.js CI](https://github.com/microsoftgraph/nodejs-webhooks-sample/actions/workflows/nodejs.yml/badge.svg)](https://github.com/microsoftgraph/nodejs-webhooks-sample/actions/workflows/nodejs.yml)
 
-Subscribe for [Microsoft Graph change notifications](https://docs.microsoft.com/graph/api/resources/webhooks) to be notified when your user's data changes, so you don't have to poll for changes.
+Subscribe for [Microsoft Graph change notifications](https://learn.microsoft.com/graph/api/resources/webhooks) to be notified when your user's data changes, so you don't have to poll for changes.
 
 This sample NodeJS web application shows how to subscribe for change notifications as well as how to validate and decrypt change notifications with resource data when supported by the resource.
 
-[User-delegated authentication](https://docs.microsoft.com/graph/auth-v2-user) represents a user and the application being used when calling the Microsoft Graph. This type of authentication is best suited for scenarios when the user interacts with the application. [Application only authentication](https://docs.microsoft.com/graph/auth-v2-service) represents only the application itself when calling the Microsoft Graph, without any notion of user. This type of authentication is best suited for background services, daemons or other kind of applications users are not directly interacting with.
+[User-delegated authentication](https://learn.microsoft.com/graph/auth-v2-user) represents a user and the application being used when calling the Microsoft Graph. This type of authentication is best suited for scenarios when the user interacts with the application. [Application only authentication](https://learn.microsoft.com/graph/auth-v2-service) represents only the application itself when calling the Microsoft Graph, without any notion of user. This type of authentication is best suited for background services, daemons or other kind of applications users are not directly interacting with.
 
-> See the list of [permissions and authentication types](https://docs.microsoft.com/graph/api/subscription-post-subscriptions?view=graph-rest-1.0) permitted for each supported resource in Microsoft Graph.
+> See the list of [permissions and authentication types](https://learn.microsoft.com/graph/api/subscription-post-subscriptions?view=graph-rest-1.0) permitted for each supported resource in Microsoft Graph.
 
 The following are common tasks that an application performs with webhooks subscriptions:
 
 - Get consent to subscribe to resources and then get an access token.
-- Use the access token to [create a subscription](https://docs.microsoft.com/graph/api/subscription-post-subscriptions) to a resource.
+- Use the access token to [create a subscription](https://learn.microsoft.com/graph/api/subscription-post-subscriptions) to a resource.
 - Send back a validation token to confirm the notification URL.
 - Listen for notifications from Microsoft Graph and respond with a 202 status code.
 - Request more information about changed resources using data in the notification if no data is provided with the notification.
@@ -50,7 +50,7 @@ The following are common tasks that an application performs with webhooks subscr
 
 To use the Webhook sample, you need the following:
 
-- [Node.js](https://nodejs.org/) version 14, 16 or 18.
+- [Node.js](https://nodejs.org/) version 18 or 20.
 - A [work or school account](https://developer.microsoft.com/microsoft-365/dev-program).
 - The application ID and key from the application that you [register on the Azure Portal](#register-the-app).
 - A public HTTPS endpoint to receive and send HTTP requests. You can host this on Microsoft Azure or another service, or you can [use ngrok](#set-up-the-ngrok-proxy-optional) or a similar tool while testing.
@@ -97,7 +97,7 @@ To use the Webhook sample, you need the following:
 
 1. Select **Application permissions**, then find and enable the **ChannelMessage.Read.All** permission. Select **Add permissions** to add the enabled permission.
 
-    > **Note:** To create subscriptions for other resources you need to select different permissions as documented [here](https://docs.microsoft.com/graph/api/subscription-post-subscriptions#permissions)
+    > **Note:** To create subscriptions for other resources you need to select different permissions as documented [here](https://learn.microsoft.com/graph/api/subscription-post-subscriptions#permissions)
 
 1. In the **Configured permissions** list, select the ellipses (`...`) in the **User.Read** row, and select **Remove permission**. The **User.Read** permission will be requested dynamically as part of the user sign-in process.
 
@@ -191,12 +191,12 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 We'd love to get your feedback about the Microsoft Graph Webhook sample. You can send your questions and suggestions to us in the [Issues](https://github.com/microsoftgraph/nodejs-webhooks-rest-sample/issues) section of this repository.
 
-Questions about Microsoft Graph in general should be posted to [Microsoft Q&A](https://docs.microsoft.com/answers/products/graph). Make sure that your questions or comments are tagged with the relevant Microsoft Graph tag.
+Questions about Microsoft Graph in general should be posted to [Microsoft Q&A](https://learn.microsoft.com/answers/products/graph). Make sure that your questions or comments are tagged with the relevant Microsoft Graph tag.
 
 ## Additional resources
 
 - [Microsoft Graph Webhooks sample for ASP.NET core](https://github.com/microsoftgraph/aspnetcore-webhooks-sample)
 - [Microsoft Graph Webhooks sample for Java Spring](https://github.com/microsoftgraph/java-spring-webhooks-sample)
-- [Working with Webhooks in Microsoft Graph](https://docs.microsoft.com/graph/api/resources/webhooks)
-- [Subscription resource](https://docs.microsoft.com/graph/api/resources/subscription)
-- [Microsoft Graph documentation](https://docs.microsoft.com/graph)
+- [Working with Webhooks in Microsoft Graph](https://learn.microsoft.com/graph/api/resources/webhooks)
+- [Subscription resource](https://learn.microsoft.com/graph/api/resources/subscription)
+- [Microsoft Graph documentation](https://learn.microsoft.com/graph)
