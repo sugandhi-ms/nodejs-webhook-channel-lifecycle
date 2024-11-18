@@ -71,10 +71,10 @@ router.get('/callback', async function (req, res) {
 
     // Create the subscription
     const subscription = await client.api('/subscriptions').create({
-      changeType: 'created',
+      changeType: 'created,updated,deleted',
       notificationUrl: `${notificationHost}/listen`,
       lifecycleNotificationUrl: `${notificationHost}/lifecycle`,
-      resource: 'me/mailFolders/inbox/messages',
+      resource: '/teams/69969688-1e3f-4883-93c6-2363c2e74b34/channels',
       clientState: process.env.SUBSCRIPTION_CLIENT_STATE,
       includeResourceData: false,
       expirationDateTime: new Date(Date.now() + 3600000).toISOString(),

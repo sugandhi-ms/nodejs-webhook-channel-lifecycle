@@ -42,14 +42,14 @@ router.get('/subscribe', async function (req, res) {
 
         await dbHelper.deleteSubscription(existingSub.subscriptionId);
       }
-    }
+    }   
 
     // Create the subscription
     const subscription = await client.api('/subscriptions').create({
-      changeType: 'created',
+      changeType: 'created,updated,deleted',
       notificationUrl: `${notificationHost}/listen`,
       lifecycleNotificationUrl: `${notificationHost}/lifecycle`,
-      resource: '/teams/getAllMessages',
+      resource: '/teams/getAllChannels',
       clientState: process.env.SUBSCRIPTION_CLIENT_STATE,
       includeResourceData: true,
       // To get resource data, we must provide a public key that

@@ -2,16 +2,16 @@ extends layout
 
 block content
   div(class='p-5 mb-4 bg-dark text-white rounded-3')
-    h1 Microsoft Graph Notifications Sample
+    h1 Channel Lifecycle Graph Notifications
     p(class='fs-4') Choose one of the options below to create a subscription
   div(class='row align-items-md-stretch')
     div(class='col-md-6')
       div(class='h-100 p-5 bg-light border rounded-3')
         h2 Delegated authentication
-        p Choose this option to sign in as a user and receive notifications when items are created in the user's Exchange Online mailbox
+        p Choose this option to sign in as a user and receive notifications when channels in a particular team are created, updated, or deleted
         a(class='btn btn-outline-secondary', href='/delegated/signin') Sign in and subscribe
     div(class='col-md-6')
       div(class='h-100 p-5 bg-light border rounded-3')
         h2 App-only authentication
-        p Choose this option to have the application receive notifications when messages are sent to any Teams channel
+        p Choose this option to have the application receive notifications when channels in any team are created, updated, or deleted
         a(class='btn btn-outline-secondary', href='/apponly/subscribe') Subscribe

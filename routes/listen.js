@@ -8,6 +8,14 @@ const dbHelper = require('../helpers/dbHelper');
 const tokenHelper = require('../helpers/tokenHelper');
 const certHelper = require('../helpers/certHelper');
 
+function extractGroupId(url) {
+  const regex = /groupId=([a-f0-9\-]{36})/i;
+  const match = url.match(regex);
+  if (match && match[1]) {
+    return match[1]; // Return the extracted groupId
+  }
+  return null;
+}
 // POST /listen
 router.post('/', async function (req, res) {
   // This is the notification endpoint Microsoft Graph sends notifications to
@@ -93,12 +101,23 @@ function processEncryptedNotification(notification) {
     );
 
     // Send the notification to the Socket.io room
+    const validObj = JSON.parse(decryptedPayload);
     emitNotification(notification.subscriptionId, {
-      type: 'chatMessage',
-      resource: JSON.parse(decryptedPayload),
+      type: 'channel',
+      resource: {teamId: extractGroupId(validObj.webUrl), id: validObj.id, changeType: notification.changeType},
     });
   }
 }
+
+function extractTeamId(odataId) {
+  // Extract the part of the OData ID that contains the team ID
+  const teamIdMatch = odataId.match(/teams\('([^']+)'\)/);
+  if (teamIdMatch && teamIdMatch.length > 1) {
+      return teamIdMatch[1];
+  }
+  return null;
+}
+
 /**
  * Process a non-encrypted notification
  * @param  {object} notification - The notification to process
@@ -107,21 +126,16 @@ function processEncryptedNotification(notification) {
  */
 async function processNotification(notification, msalClient, userAccountId) {
   // Get the message ID
-  const messageId = notification.resourceData.id;
+  const channelId = notification.resourceData.id;
+  const teamId =  extractTeamId(notification.resource);
 
   const client = graph.getGraphClientForUser(msalClient, userAccountId);
 
   try {
     // Get the message from Graph
-    const message = await client
-      .api(`/me/messages/${messageId}`)
-      .select('subject,id')
-      .get();
-
-    // Send the notification to the Socket.io room
-    emitNotification(notification.subscriptionId, {
-      type: 'message',
-      resource: message,
+      emitNotification(notification.subscriptionId, {
+      type: 'channel',
+      resource: {teamId, id: channelId, changeType: notification.changeType},
     });
   } catch (err) {
     console.log(`Error getting message with ${messageId}:`);

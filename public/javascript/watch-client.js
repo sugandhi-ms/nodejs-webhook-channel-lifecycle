@@ -11,25 +11,19 @@ socket.on('notification_received', (notificationData) => {
   // Create a new table row with data from the notification
   const tableRow = document.createElement('tr');
 
-  if (notificationData.type == 'message') {
-    // Email messages log subject and message ID
-    const subjectCell = document.createElement('td');
-    subjectCell.innerText = notificationData.resource.subject;
-    tableRow.appendChild(subjectCell);
+  if (notificationData.type == 'channel') { {
+    console.log(`Channel notification type: ${notificationData.type}`);
+    const groupId = document.createElement('td');
+    groupId.innerText = notificationData.resource?.teamId ?? "TeamId";
+    tableRow.appendChild(groupId);
 
-    const idCell = document.createElement('td');
-    idCell.innerText = notificationData.resource.id;
-    tableRow.appendChild(idCell);
-  } else if (notificationData.type === 'chatMessage') {
-    // Teams channel messages log sender and text
-    const senderCell = document.createElement('td');
-    senderCell.innerText =
-      notificationData.resource.from.user?.displayName || 'Unknown';
-    tableRow.appendChild(senderCell);
-
-    const messageCell = document.createElement('td');
-    messageCell.innerText = notificationData.resource.body?.content || '';
-    tableRow.appendChild(messageCell);
+    const channelId = document.createElement('td');
+    channelId.innerText = notificationData.resource?.id ?? "ChannelId";
+    tableRow.appendChild(channelId);
+    
+    const channelName = document.createElement('td');
+    channelName.innerText = notificationData.resource?.changeType ?? "Something";
+    tableRow.appendChild(channelName);
   }
 
   document.getElementById('notifications').appendChild(tableRow);
