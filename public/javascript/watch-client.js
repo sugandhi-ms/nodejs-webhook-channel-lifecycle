@@ -11,7 +11,7 @@ socket.on('notification_received', (notificationData) => {
   // Create a new table row with data from the notification
   const tableRow = document.createElement('tr');
 
-  if (notificationData.type == 'channel') { {
+  if (notificationData.type == 'channel') { 
     console.log(`Channel notification type: ${notificationData.type}`);
     const groupId = document.createElement('td');
     groupId.innerText = notificationData.resource?.teamId ?? "TeamId";
@@ -25,7 +25,6 @@ socket.on('notification_received', (notificationData) => {
     channelName.innerText = notificationData.resource?.changeType ?? "Something";
     tableRow.appendChild(channelName);
   }
-
   document.getElementById('notifications').appendChild(tableRow);
 });
 
